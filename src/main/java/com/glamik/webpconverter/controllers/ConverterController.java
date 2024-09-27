@@ -21,7 +21,7 @@ public class ConverterController {
     }
 
     @PostMapping("/convert-to-webp")
-    public ResponseEntity<ByteArrayResource> convertImage(@RequestParam("image") MultipartFile imageFile) throws IOException {
+    public ResponseEntity<ByteArrayResource> convertImage(@RequestParam("image") MultipartFile imageFile) {
         try {
             byte[] webpBytes = converterService.convertToWebp(imageFile.getInputStream());
             ByteArrayResource byteArrayResource = new ByteArrayResource(webpBytes);
