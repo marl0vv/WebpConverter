@@ -1,4 +1,4 @@
-package com.glamik.webpconverter.Service;
+package com.glamik.webpconverter.service;
 
 import org.springframework.stereotype.Service;
 
