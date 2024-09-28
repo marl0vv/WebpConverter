@@ -7,15 +7,30 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
 
 @Service
 public class ConverterService {
 
-    public byte[] convertToWebp(InputStream inputStream) throws IOException {
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            BufferedImage image = ImageIO.read(inputStream);
-            ImageIO.write(image, "webp", outputStream);
-            return outputStream.toByteArray();
+    public Path convertToWebp(Path inputPath) throws IOException {
+        String outputFileName = getFileNameWithoutExtension(inputPath.getFileName().toString()) + ".webp";
+        Path outputPath = inputPath.getParent().resolve(outputFileName);
+
+        BufferedImage image = ImageIO.read(inputPath.toFile());
+        if (image == null) {
+            throw new IOException("Invalid image file: " + inputPath.getFileName());
         }
+
+        boolean success = ImageIO.write(image, "webp", outputPath.toFile());
+        if (!success) {
+            throw new IOException("Failed to write image: " + outputPath.getFileName());
+        }
+
+        return outputPath;
+    }
+
+    private String getFileNameWithoutExtension(String filename) {
+        int lastDot = filename.lastIndexOf('.');
+        return (lastDot == -1) ? filename : filename.substring(0, lastDot);
     }
 }
