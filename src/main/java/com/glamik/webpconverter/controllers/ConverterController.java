@@ -2,6 +2,8 @@ package com.glamik.webpconverter.controllers;
 
 import com.glamik.webpconverter.service.ConverterService;
 
+import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,13 +14,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
+@RequiredArgsConstructor
 public class ConverterController {
 
     private final ConverterService converterService;
-
-    public ConverterController(ConverterService converterService) {
-        this.converterService = converterService;
-    }
 
     @PostMapping("/convert-to-webp")
     public ResponseEntity<ByteArrayResource> convertImage(@RequestParam("image") MultipartFile imageFile) {
