@@ -58,7 +58,7 @@ public class ConverterController {
 
     private void deleteIfExists(Path path) {
         if (path != null && Files.exists(path)) {
-                path.toFile().deleteOnExit();
+            path.toFile().deleteOnExit();
         }
     }
 }

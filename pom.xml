@@ -54,11 +54,7 @@
             <scope>provided</scope>
         </dependency>
 
-        <!--<dependency>
-            <groupId>com.antkorwin</groupId>
-            <artifactId>ioutils</artifactId>
-            <version>0.8</version>
-        </dependency>-->
+        
     </dependencies>
 
     <build>

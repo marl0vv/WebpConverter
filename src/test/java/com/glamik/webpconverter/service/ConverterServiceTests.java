@@ -1,12 +1,11 @@
 package com.glamik.webpconverter.service;
 
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.jupiter.api.io.TempDir;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -15,42 +14,50 @@ import java.nio.file.Path;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-@SpringBootTest
-public class ConverterServiceTests {
+class ConverterServiceTests {
 
-    @Autowired
-    private ConverterService converterService;
+    private ConverterService converterService = new ConverterService();
+
+    @TempDir
+    Path tempDir;
 
     @Test
     void testSuccessfulConversion() throws IOException {
-        InputStream inputStream = Files.newInputStream(Path.of("src/test/resources/test-image.jpg"));
-        byte[] webpBytes = converterService.convertToWebp(inputStream);
+        Path resource = new ClassPathResource("/test-image.jpg").getFile().toPath();
+        Path outputPath = converterService.convertToWebp(resource);
 
-        assertThat(webpBytes).isNotNull().isNotEmpty();
+        assertThat(outputPath).isNotEmptyFile();
 
-        BufferedImage image = ImageIO.read(new ByteArrayInputStream(webpBytes));
-        assertThat(image).isNotNull();
+        InputStream convertedStream = new ClassPathResource("/test-image.webp").getInputStream();
+        byte[] convertedBytes = convertedStream.readAllBytes();
+        InputStream referenceStream = new ClassPathResource("/test-image-reference.webp").getInputStream();
+        byte[] referenceBytes = referenceStream.readAllBytes();
+        assertThat(convertedBytes).isEqualTo(referenceBytes);
     }
 
     @Test
     void testWrongInput() {
-        InputStream inputStream = new ByteArrayInputStream("data".getBytes());
+        Path inputPath = Path.of("/testWrongPath");
 
-        assertThatThrownBy(() -> converterService.convertToWebp(inputStream))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("image == null");
+        assertThatThrownBy(() -> converterService.convertToWebp(inputPath))
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Can't read input file!");
     }
 
     @Test
     void testNullInput() {
         assertThatThrownBy(() -> converterService.convertToWebp(null))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(NullPointerException.class);
     }
 
     @Test
-    void testEmptyInput() {
-        InputStream inputStream = new ByteArrayInputStream(new byte[0]);
-        assertThatThrownBy(() -> converterService.convertToWebp(inputStream))
-                .isInstanceOf(IllegalArgumentException.class);
+    void testEmptyInput() throws IOException {
+        Path emptyFile = tempDir.resolve("empty.jpg");
+        Files.createFile(emptyFile);
+        Files.write(emptyFile, new byte[0]);
+
+        assertThatThrownBy(() -> converterService.convertToWebp(emptyFile))
+                .isInstanceOf(IOException.class)
+                .hasMessageContaining("Invalid image file: " + emptyFile.getFileName());
     }
 }
