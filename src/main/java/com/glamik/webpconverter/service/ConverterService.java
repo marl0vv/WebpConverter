@@ -1,5 +1,6 @@
 package com.glamik.webpconverter.service;
 
+import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -11,6 +12,7 @@ import java.io.IOException;
 public class ConverterService {
 
     public File convertToWebp(File inputFile) throws IOException {
+        checkInputMimeType(inputFile);
         String outputFileName = getFileNameWithoutExtension(inputFile.getName()) + ".webp";
         File outputFile = new File(inputFile.getParent() + outputFileName);
 
@@ -27,6 +29,13 @@ public class ConverterService {
         return outputFile;
     }
 
+    private void checkInputMimeType(File inputFile) throws IOException {
+        Tika tika = new Tika();
+        String mimeType = tika.detect(inputFile);
+        if (!mimeType.startsWith("image/")) {
+            throw new IllegalArgumentException("Input file is not an image");
+        }
+    }
     private String getFileNameWithoutExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
         return (lastDot == -1) ? filename : filename.substring(0, lastDot);

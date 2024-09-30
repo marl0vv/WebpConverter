@@ -38,7 +38,11 @@ public class ConverterController {
             return ResponseEntity.ok().body(resource);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
-        } finally {
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+        finally {
             deleteIfExists(webpFile);
             deleteIfExists(tempInputFile);
         }
