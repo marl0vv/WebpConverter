@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
-
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -18,23 +18,19 @@ class ConverterServiceTests {
     @Test
     void testSuccessfulConversion() throws IOException {
         // Arrange
-        File resource = new ClassPathResource("/test-image.jpg").getFile();
-
+        File resource = new ClassPathResource("test-image.jpg").getFile();
         // Act
         File outputFile = converterService.convertToWebp(resource);
 
         // Assert
         assertThat(outputFile).isNotEmpty();
 
-        // Arrange
-        InputStream convertedStream = new ClassPathResource("/test-image.webp").getInputStream();
-        InputStream referenceStream = new ClassPathResource("/test-image-reference.webp").getInputStream();
+        InputStream convertedStream = new FileInputStream(outputFile);
+        InputStream referenceStream = new ClassPathResource("test-image-reference.webp").getInputStream();
 
-        // Act
         byte[] convertedBytes = convertedStream.readAllBytes();
         byte[] referenceBytes = referenceStream.readAllBytes();
 
-        // Assert
         assertThat(convertedBytes).isEqualTo(referenceBytes);
     }
 

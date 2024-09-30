@@ -1,5 +1,7 @@
 package com.glamik.webpconverter.service;
 
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
 import org.springframework.stereotype.Service;
 
@@ -9,11 +11,14 @@ import java.io.File;
 import java.io.IOException;
 
 @Service
+@RequiredArgsConstructor
 public class ConverterService {
 
-    public File convertToWebp(File inputFile) throws IOException {
+    private static final Tika TIKA = new Tika();
+
+    public File convertToWebp(@NonNull File inputFile) throws IOException {
         checkInputMimeType(inputFile);
-        File outputFile = new File(inputFile.getParent() + "/ConvertedTempImage.webp");
+        File outputFile = File.createTempFile("ConvertedTempImage-", ".webp");
 
         BufferedImage image = ImageIO.read(inputFile);
         if (image == null) {
@@ -29,8 +34,7 @@ public class ConverterService {
     }
 
     private void checkInputMimeType(File inputFile) throws IOException {
-        Tika tika = new Tika();
-        String mimeType = tika.detect(inputFile);
+        String mimeType = TIKA.detect(inputFile);
         if (!mimeType.startsWith("image/")) {
             throw new IllegalArgumentException("Input file is not an image");
         }
