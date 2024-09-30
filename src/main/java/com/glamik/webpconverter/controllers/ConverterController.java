@@ -4,6 +4,7 @@ import com.glamik.webpconverter.service.ConverterService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.PathResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +29,7 @@ public class ConverterController {
         try {
             String originalFilename = imageFile.getOriginalFilename();
             String fileExtension = getFileExtension(originalFilename);
+            String outputFileName = getFileNameWithoutExtension(originalFilename) + ".webp";
 
             tempInputFile = File.createTempFile("input-", fileExtension);
             imageFile.transferTo(tempInputFile);
@@ -35,14 +37,19 @@ public class ConverterController {
             webpFile = converterService.convertToWebp(tempInputFile);
             PathResource resource = new PathResource(String.valueOf(webpFile));
 
-            return ResponseEntity.ok().body(resource);
+            HttpHeaders responseHeaders = new HttpHeaders();
+            responseHeaders.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + outputFileName + "\"");
+            responseHeaders.add(HttpHeaders.CONTENT_TYPE, "image/webp");
+
+            return ResponseEntity.ok()
+                    .headers(responseHeaders)
+                    .body(resource);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
 
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().build();
-        }
-        finally {
+        } finally {
             deleteIfExists(webpFile);
             deleteIfExists(tempInputFile);
         }
@@ -51,6 +58,11 @@ public class ConverterController {
     private String getFileExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
         return (lastDot == -1) ? ".tmp" : filename.substring(lastDot);
+    }
+
+    private String getFileNameWithoutExtension(String filename) {
+        int lastDot = filename.lastIndexOf('.');
+        return (lastDot == -1) ? filename : filename.substring(0, lastDot);
     }
 
     private void deleteIfExists(File file) {

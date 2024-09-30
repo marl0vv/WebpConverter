@@ -13,8 +13,7 @@ public class ConverterService {
 
     public File convertToWebp(File inputFile) throws IOException {
         checkInputMimeType(inputFile);
-        String outputFileName = getFileNameWithoutExtension(inputFile.getName()) + ".webp";
-        File outputFile = new File(inputFile.getParent() + outputFileName);
+        File outputFile = new File(inputFile.getParent() + "/ConvertedTempImage.webp");
 
         BufferedImage image = ImageIO.read(inputFile);
         if (image == null) {
@@ -36,8 +35,6 @@ public class ConverterService {
             throw new IllegalArgumentException("Input file is not an image");
         }
     }
-    private String getFileNameWithoutExtension(String filename) {
-        int lastDot = filename.lastIndexOf('.');
-        return (lastDot == -1) ? filename : filename.substring(0, lastDot);
-    }
+
+
 }
