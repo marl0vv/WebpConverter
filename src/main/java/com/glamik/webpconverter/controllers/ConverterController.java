@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,25 +22,25 @@ public class ConverterController {
 
     @PostMapping("/convert-to-webp")
     public ResponseEntity<PathResource> convertImage(@RequestParam("image") MultipartFile imageFile) {
-        Path tempInputPath = null;
-        Path webpPath = null;
+        File tempInputFile = null;
+        File webpFile = null;
 
         try {
             String originalFilename = imageFile.getOriginalFilename();
             String fileExtension = getFileExtension(originalFilename);
 
-            tempInputPath = Files.createTempFile("input-", fileExtension);
-            imageFile.transferTo(tempInputPath.toFile());
+            tempInputFile = File.createTempFile("input-", fileExtension);
+            imageFile.transferTo(tempInputFile);
 
-            webpPath = converterService.convertToWebp(tempInputPath);
-            PathResource resource = new PathResource(webpPath);
+            webpFile = converterService.convertToWebp(tempInputFile);
+            PathResource resource = new PathResource(String.valueOf(webpFile));
 
             return ResponseEntity.ok().body(resource);
         } catch (IOException e) {
             return ResponseEntity.internalServerError().build();
         } finally {
-            deleteIfExists(webpPath);
-            deleteIfExists(tempInputPath);
+            deleteIfExists(webpFile);
+            deleteIfExists(tempInputFile);
         }
     }
 
@@ -49,9 +49,9 @@ public class ConverterController {
         return (lastDot == -1) ? ".tmp" : filename.substring(lastDot);
     }
 
-    private void deleteIfExists(Path path) {
-        if (path != null && Files.exists(path)) {
-            path.toFile().deleteOnExit();
+    private void deleteIfExists(File file) {
+        if (file != null && Files.exists(file.toPath())) {
+            file.deleteOnExit();
         }
     }
 }

@@ -4,27 +4,27 @@ import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 
 @Service
 public class ConverterService {
 
-    public Path convertToWebp(Path inputPath) throws IOException {
-        String outputFileName = getFileNameWithoutExtension(inputPath.getFileName().toString()) + ".webp";
-        Path outputPath = inputPath.getParent().resolve(outputFileName);
+    public File convertToWebp(File inputFile) throws IOException {
+        String outputFileName = getFileNameWithoutExtension(inputFile.getName()) + ".webp";
+        File outputFile = new File(inputFile.getParent() + outputFileName);
 
-        BufferedImage image = ImageIO.read(inputPath.toFile());
+        BufferedImage image = ImageIO.read(inputFile);
         if (image == null) {
-            throw new IOException("Invalid image file: " + inputPath.getFileName());
+            throw new IOException("Invalid image file: " + inputFile.getName());
         }
 
-        boolean success = ImageIO.write(image, "webp", outputPath.toFile());
+        boolean success = ImageIO.write(image, "webp", outputFile);
         if (!success) {
-            throw new IOException("Failed to write image: " + outputPath.getFileName());
+            throw new IOException("Failed to write image: " + outputFile.getName());
         }
 
-        return outputPath;
+        return outputFile;
     }
 
     private String getFileNameWithoutExtension(String filename) {

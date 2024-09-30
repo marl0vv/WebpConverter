@@ -9,9 +9,9 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -33,10 +33,10 @@ class ConverterControllerTests {
     void testConvertImageSuccess() throws Exception {
         byte[] sampleWebpBytes = "Sample".getBytes();
 
-        Path samplePath = Files.createTempFile("sample", ".webp");
-        Files.write(samplePath, sampleWebpBytes);
+        File samplePath = new File("sample.webp"); Files.createTempFile("sample", ".webp");
+        Files.write(samplePath.toPath(), sampleWebpBytes);
 
-        when(converterService.convertToWebp(any(Path.class))).thenReturn(samplePath);
+        when(converterService.convertToWebp(any(File.class))).thenReturn(samplePath);
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "image",
@@ -50,12 +50,12 @@ class ConverterControllerTests {
                 .andExpect(status().isOk())
                 .andExpect(content().bytes(sampleWebpBytes));
 
-        Files.deleteIfExists(samplePath);
+        Files.deleteIfExists(samplePath.toPath());
     }
 
     @Test
     void testConvertImageFailure() throws Exception {
-        when(converterService.convertToWebp(any(Path.class))).thenThrow(new IOException("Conversion error"));
+        when(converterService.convertToWebp(any(File.class))).thenThrow(new IOException("Conversion error"));
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "image",
