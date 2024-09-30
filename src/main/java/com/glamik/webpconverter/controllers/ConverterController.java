@@ -22,13 +22,6 @@ public class ConverterController {
 
     @PostMapping("/convert-to-webp")
     public ResponseEntity<PathResource> convertImage(@RequestParam("image") MultipartFile imageFile) {
-        Path tempDir;
-        try {
-            tempDir = Files.createTempDirectory("webp-converter-");
-        } catch (IOException e) {
-            return ResponseEntity.internalServerError().build();
-        }
-
         Path tempInputPath = null;
         Path webpPath = null;
 
@@ -36,7 +29,7 @@ public class ConverterController {
             String originalFilename = imageFile.getOriginalFilename();
             String fileExtension = getFileExtension(originalFilename);
 
-            tempInputPath = Files.createTempFile(tempDir, "input-", fileExtension);
+            tempInputPath = Files.createTempFile("input-", fileExtension);
             imageFile.transferTo(tempInputPath.toFile());
 
             webpPath = converterService.convertToWebp(tempInputPath);
