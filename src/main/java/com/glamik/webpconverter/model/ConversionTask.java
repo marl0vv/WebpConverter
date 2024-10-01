@@ -13,22 +13,19 @@ import java.util.UUID;
 @Table()
 @Getter
 @Setter
-@RequiredArgsConstructor
 @AllArgsConstructor
+@RequiredArgsConstructor
 public class ConversionTask {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ConversionTaskStatus taskStatus;
+    private final ConversionTaskStatus taskStatus;
 
     @Column(nullable = false)
-    private String fileName;
+    private final String fileName;
 
-    public ConversionTask(ConversionTaskStatus taskStatus, String fileName) {
-        this.taskStatus = taskStatus;
-        this.fileName = fileName;
-    }
 }

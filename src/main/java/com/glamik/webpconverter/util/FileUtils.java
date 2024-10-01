@@ -7,7 +7,7 @@ import java.nio.file.Files;
 
 @UtilityClass
 public class FileUtils {
-    
+
     public static String getFileExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
         return (lastDot == -1) ? ".tmp" : filename.substring(lastDot);
