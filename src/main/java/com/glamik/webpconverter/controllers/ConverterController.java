@@ -1,7 +1,10 @@
 package com.glamik.webpconverter.controllers;
 
+import com.glamik.webpconverter.model.ConversionTask;
+import com.glamik.webpconverter.repository.ConversionTaskRepository;
 import com.glamik.webpconverter.service.ConverterService;
 
+import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpHeaders;
@@ -14,12 +17,15 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+//@AllArgsConstructor
 public class ConverterController {
 
     private final ConverterService converterService;
+    private final ConversionTaskRepository conversionTaskRepository;
 
     @PostMapping("/convert-to-webp")
     public ResponseEntity<PathResource> convertImage(@RequestParam("image") MultipartFile imageFile) {
@@ -54,6 +60,26 @@ public class ConverterController {
             deleteIfExists(tempInputFile);
         }
     }
+
+    @PostMapping("/convert-to-webp/async")
+    public ResponseEntity<UUID> convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
+        File tempInputFile = null;
+        String originalFilename;
+        try {
+            originalFilename = imageFile.getOriginalFilename();
+            tempInputFile = File.createTempFile("input-", getFileExtension(originalFilename));
+            imageFile.transferTo(tempInputFile);
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError().build();
+        }
+
+
+        ConversionTask conversionTask = conversionTaskRepository
+                .save(new ConversionTask("PROCESSING", originalFilename));
+        return ResponseEntity.ok()
+                .body(conversionTask.getId());
+    }
+
 
     private String getFileExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
