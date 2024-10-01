@@ -1,9 +1,13 @@
 package com.glamik.webpconverter.util;
 
+import lombok.experimental.UtilityClass;
+
 import java.io.File;
 import java.nio.file.Files;
 
+@UtilityClass
 public class FileUtils {
+    
     public static String getFileExtension(String filename) {
         int lastDot = filename.lastIndexOf('.');
         return (lastDot == -1) ? ".tmp" : filename.substring(lastDot);
