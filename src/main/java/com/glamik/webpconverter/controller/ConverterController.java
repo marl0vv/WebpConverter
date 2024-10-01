@@ -1,6 +1,5 @@
 package com.glamik.webpconverter.controller;
 
-import com.glamik.webpconverter.repository.ConversionTaskRepository;
 import com.glamik.webpconverter.service.ConverterService;
 
 import lombok.RequiredArgsConstructor;

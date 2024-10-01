@@ -2,30 +2,25 @@ package com.glamik.webpconverter.model;
 
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
-@Table()
+@Table
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
 public class ConversionTask {
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private final ConversionTaskStatus taskStatus;
+    private ConversionTaskStatus status;
 
     @Column(nullable = false)
-    private final String fileName;
-
+    private String fileName;
 }
