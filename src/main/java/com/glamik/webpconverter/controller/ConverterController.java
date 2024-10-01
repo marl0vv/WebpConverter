@@ -1,4 +1,4 @@
-package com.glamik.webpconverter.controllers;
+package com.glamik.webpconverter.controller;
 
 import com.glamik.webpconverter.service.ConverterService;
 
@@ -13,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
+
+import static com.glamik.webpconverter.util.FileUtils.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,19 +56,4 @@ public class ConverterController {
         }
     }
 
-    private String getFileExtension(String filename) {
-        int lastDot = filename.lastIndexOf('.');
-        return (lastDot == -1) ? ".tmp" : filename.substring(lastDot);
-    }
-
-    private String getFileNameWithoutExtension(String filename) {
-        int lastDot = filename.lastIndexOf('.');
-        return (lastDot == -1) ? filename : filename.substring(0, lastDot);
-    }
-
-    private void deleteIfExists(File file) {
-        if (file != null && Files.exists(file.toPath())) {
-            file.deleteOnExit();
-        }
-    }
 }

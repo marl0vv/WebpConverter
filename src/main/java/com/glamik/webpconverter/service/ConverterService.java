@@ -33,12 +33,13 @@ public class ConverterService {
         return outputFile;
     }
 
+
+
     private void checkInputMimeType(File inputFile) throws IOException {
         String mimeType = TIKA.detect(inputFile);
         if (!mimeType.startsWith("image/")) {
             throw new IllegalArgumentException("Input file is not an image");
         }
     }
-
 
 }
