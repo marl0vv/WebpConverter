@@ -22,7 +22,6 @@ import static com.glamik.webpconverter.util.FileUtils.*;
 public class ConverterController {
 
     private final ConverterService converterService;
-    private final ConversionTaskRepository conversionTaskRepository;
 
     @PostMapping("/convert-to-webp")
     public ResponseEntity<PathResource> convertImage(@RequestParam("image") MultipartFile imageFile) {

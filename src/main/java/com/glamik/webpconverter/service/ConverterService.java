@@ -1,5 +1,10 @@
 package com.glamik.webpconverter.service;
 
+import com.glamik.webpconverter.enums.ConversionTaskStatus;
+import com.glamik.webpconverter.model.ConversionTask;
+import com.glamik.webpconverter.repository.ConversionTaskRepository;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.apache.tika.Tika;
@@ -15,6 +20,7 @@ import java.io.IOException;
 public class ConverterService {
 
     private static final Tika TIKA = new Tika();
+    private final ConversionTaskRepository conversionTaskRepository;
 
     public File convertToWebp(@NonNull File inputFile) throws IOException {
         checkInputMimeType(inputFile);
@@ -31,6 +37,11 @@ public class ConverterService {
         }
 
         return outputFile;
+    }
+
+    public ConversionTask saveConversionTask(String filename) {
+        return conversionTaskRepository
+                .save(new ConversionTask(ConversionTaskStatus.PENDING, filename));
     }
 
     private void checkInputMimeType(File inputFile) throws IOException {

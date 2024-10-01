@@ -22,7 +22,6 @@ import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
 public class ConverterControllerAsync {
 
     private final ConverterService converterService;
-    private final ConversionTaskRepository conversionTaskRepository;
 
     @PostMapping("/convert-to-webp/async")
     public ResponseEntity<UUID> convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
@@ -36,8 +35,7 @@ public class ConverterControllerAsync {
             return ResponseEntity.internalServerError().build();
         }
 
-        ConversionTask conversionTask = conversionTaskRepository
-                .save(new ConversionTask(ConversionTaskStatus.PENDING, originalFilename));
+        ConversionTask conversionTask =  converterService.saveConversionTask(originalFilename);
         return ResponseEntity.ok()
                 .body(conversionTask.getId());
     }
