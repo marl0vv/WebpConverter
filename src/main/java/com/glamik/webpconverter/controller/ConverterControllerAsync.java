@@ -15,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.UUID;
 
+import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
+
 @RestController
 @RequiredArgsConstructor
 public class ConverterControllerAsync {
