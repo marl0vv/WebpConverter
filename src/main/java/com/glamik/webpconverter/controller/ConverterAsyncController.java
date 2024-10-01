@@ -1,9 +1,7 @@
 package com.glamik.webpconverter.controller;
 
-import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.model.ConversionTask;
-import com.glamik.webpconverter.repository.ConversionTaskRepository;
-import com.glamik.webpconverter.service.ConverterService;
+import com.glamik.webpconverter.service.ConversionTaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,9 +17,9 @@ import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
 
 @RestController
 @RequiredArgsConstructor
-public class ConverterControllerAsync {
+public class ConverterAsyncController {
 
-    private final ConverterService converterService;
+    private final ConversionTaskService conversionTaskService;
 
     @PostMapping("/convert-to-webp/async")
     public ResponseEntity<UUID> convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
@@ -35,7 +33,7 @@ public class ConverterControllerAsync {
             return ResponseEntity.internalServerError().build();
         }
 
-        ConversionTask conversionTask =  converterService.saveConversionTask(originalFilename);
+        ConversionTask conversionTask =  conversionTaskService.saveConversionTask(originalFilename);
         return ResponseEntity.ok()
                 .body(conversionTask.getId());
     }
