@@ -1,4 +1,4 @@
-package com.glamik.webpconverter.controllers;
+package com.glamik.webpconverter.controller;
 
 import com.glamik.webpconverter.service.ConverterService;
 

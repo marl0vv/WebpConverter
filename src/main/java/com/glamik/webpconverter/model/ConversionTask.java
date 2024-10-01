@@ -1,5 +1,6 @@
 package com.glamik.webpconverter.model;
 
+import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,21 +10,24 @@ import lombok.Setter;
 import java.util.UUID;
 
 @Entity
-@Table(name = "conversion_tasks")
-@Getter @Setter
+@Table()
+@Getter
+@Setter
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class ConversionTask {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "task_status", nullable = false)
-    private String taskStatus;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private ConversionTaskStatus taskStatus;
 
-    @Column(name = "file_name", nullable = false)
+    @Column(nullable = false)
     private String fileName;
 
-    public ConversionTask(String taskStatus, String fileName) {
+    public ConversionTask(ConversionTaskStatus taskStatus, String fileName) {
         this.taskStatus = taskStatus;
         this.fileName = fileName;
     }
