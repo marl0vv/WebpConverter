@@ -12,6 +12,8 @@ public class ConversionTaskService {
 
     private final ConversionTaskRepository conversionTaskRepository;
 
+    private ConversionTask savedTask;
+
     public ConversionTask saveConversionTask(String filename) {
         ConversionTask conversionTask = ConversionTask.builder()
                 .status(ConversionTaskStatus.PENDING)
