@@ -14,7 +14,7 @@ import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
 public class FileService {
 
     private final File baseDir;
-    public static final String BASE_DIR = "webpconverter-";
+    public static final String BASE_DIR = "WebpConverterImages";
     public static final String IN_DIR = "in";
     public static final String OUT_DIR = "out";
 
@@ -24,11 +24,21 @@ public class FileService {
     }
 
     private File createBaseDirectory() throws IOException {
-        File tempDir = File.createTempFile(BASE_DIR, "");
-        if (!tempDir.delete() || !tempDir.mkdirs()) {
-            throw new IOException("Failed to create base directory: " + tempDir.getAbsolutePath());
+        String currentDir = System.getProperty("user.dir");
+        File currentDirectory = new File(currentDir);
+
+        File parentDir = currentDirectory.getParentFile();
+        if (parentDir == null) {
+            throw new IOException("Cannot determine the parent directory of the current directory: " + currentDir);
         }
-        return tempDir;
+
+        File baseDirectory = new File(parentDir, BASE_DIR);
+
+        if (!baseDirectory.exists() && !baseDirectory.mkdirs()) {
+                throw new IOException("Unable to create directory: " + baseDirectory.getAbsolutePath());
+            }
+
+        return baseDirectory;
     }
 
     public File getInDir() {
