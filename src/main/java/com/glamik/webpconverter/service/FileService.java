@@ -6,6 +6,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Service
@@ -56,6 +58,18 @@ public class FileService {
 
         imageFile.transferTo(inputFile);
         return inputFile;
+    }
+
+    public File saveOutputFile(File imageFile) throws IOException {
+        String newFileName = "output-" + UUID.randomUUID() + ".webp";
+        File outputFile = new File(getOutDir(), newFileName);
+
+        Files.copy(imageFile.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        return outputFile;
+    }
+
+    public File getInputFile(String filesystemName) {
+        return new File(getInDir(), filesystemName);
     }
 
 }
