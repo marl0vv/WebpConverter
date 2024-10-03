@@ -12,12 +12,11 @@ public class ConversionTaskService {
 
     private final ConversionTaskRepository conversionTaskRepository;
 
-    private ConversionTask savedTask;
-
-    public ConversionTask saveConversionTask(String filename) {
+    public ConversionTask saveConversionTask(String originalFileName, String filesystemName) {
         ConversionTask conversionTask = ConversionTask.builder()
                 .status(ConversionTaskStatus.PENDING)
-                .fileName(filename)
+                .originalName(originalFileName)
+                .filesystemName(filesystemName)
                 .build();
 
         return conversionTaskRepository

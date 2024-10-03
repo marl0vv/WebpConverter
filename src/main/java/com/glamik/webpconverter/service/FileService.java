@@ -62,11 +62,10 @@ public class FileService {
         }
     }
 
-    public File saveInputFile(MultipartFile imageFile) throws IOException {
-        String originalFilename = Objects.requireNonNull(imageFile.getOriginalFilename(), "File must have a name");
-        String fileExtension = getFileExtension(originalFilename);
+    public File saveInputFile(MultipartFile imageFile, String fileExtension) throws IOException {
         String newFileName = "input-" + UUID.randomUUID() + fileExtension;
         File inputFile = new File(getInDir(), newFileName);
+
         imageFile.transferTo(inputFile);
         return inputFile;
     }

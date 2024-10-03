@@ -11,6 +11,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
+
+import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
+import static com.glamik.webpconverter.util.FileUtils.getFileNameWithoutExtension;
 
 @RequiredArgsConstructor
 @Getter
@@ -23,8 +27,10 @@ public class SaveConversionTaskCommand implements Command<MultipartFile, Convers
     @Override
     @SneakyThrows
     public ConversionTask execute(MultipartFile imageFile) {
-        File savedFile = fileService.saveInputFile(imageFile);
-        return conversionTaskService.saveConversionTask(savedFile.getName());
+        String originalFilename = Objects.requireNonNull(imageFile.getOriginalFilename(), "File must have a name");
+
+        File savedFile = fileService.saveInputFile(imageFile, getFileExtension(originalFilename));
+        return conversionTaskService.saveConversionTask(getFileNameWithoutExtension(originalFilename), savedFile.getName());
     }
-    
+
 }
