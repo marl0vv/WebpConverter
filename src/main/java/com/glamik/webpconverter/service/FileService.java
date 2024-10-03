@@ -1,5 +1,6 @@
 package com.glamik.webpconverter.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,23 +14,26 @@ import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
 @Service
 public class FileService {
 
+
+    private final String programDir;
     private final File baseDir;
+
     public static final String BASE_DIR = "WebpConverterImages";
     public static final String IN_DIR = "in";
     public static final String OUT_DIR = "out";
 
-    public FileService() throws IOException {
+    public FileService(@Value("${base.directory}") String programDir) throws IOException {
+        this.programDir = programDir;
         this.baseDir = createBaseDirectory();
         createDirectories();
     }
 
     private File createBaseDirectory() throws IOException {
-        String currentDir = System.getProperty("user.dir");
-        File currentDirectory = new File(currentDir);
+        File currentDirectory = new File(programDir);
 
         File parentDir = currentDirectory.getParentFile();
         if (parentDir == null) {
-            throw new IOException("Cannot determine the parent directory of the current directory: " + currentDir);
+            throw new IOException("Cannot determine the parent directory of the current directory: " + programDir);
         }
 
         File baseDirectory = new File(parentDir, BASE_DIR);
