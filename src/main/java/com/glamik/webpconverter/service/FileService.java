@@ -45,11 +45,11 @@ public class FileService {
         return baseDirectory;
     }
 
-    public File getInDir() {
+    private File getInDir() {
         return new File(baseDir, IN_DIR);
     }
 
-    public File getOutDir() {
+    private File getOutDir() {
         return new File(baseDir, OUT_DIR);
     }
 
