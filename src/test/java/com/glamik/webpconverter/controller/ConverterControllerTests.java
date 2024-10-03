@@ -22,16 +22,16 @@ import static org.mockito.Mockito.when;
 
 class ConverterControllerTests {
 
-    private ConverterService converterService = Mockito.mock(ConverterService.class);
+    private final ConverterService converterService = Mockito.mock(ConverterService.class);
 
-    private ConverterController converterController = new ConverterController(converterService);
+    private final ConverterController converterController = new ConverterController(converterService);
 
     @Test
     void testConvertImageSuccess() throws Exception {
         // Arrange
         File convertedFile = new ClassPathResource("/test-image-reference.webp").getFile();
         File tempInputFile = File.createTempFile("input-", ".webp");
-        IOUtils.copy(convertedFile.toURL(), tempInputFile);
+        IOUtils.copy(convertedFile.toURI().toURL(), tempInputFile);
 
         when(converterService.convertToWebp(any(File.class))).thenReturn(tempInputFile);
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
@@ -94,4 +94,5 @@ class ConverterControllerTests {
         // Assert
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
+
 }

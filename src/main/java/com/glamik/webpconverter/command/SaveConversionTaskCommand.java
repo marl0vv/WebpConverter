@@ -3,21 +3,19 @@ package com.glamik.webpconverter.command;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.FileService;
-import lombok.Getter;
+
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Objects;
 
 import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
 import static com.glamik.webpconverter.util.FileUtils.getFileNameWithoutExtension;
 
 @RequiredArgsConstructor
-@Getter
 @Component
 public class SaveConversionTaskCommand implements Command<MultipartFile, ConversionTask> {
 

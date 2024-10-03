@@ -6,19 +6,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.UUID;
-
-import static com.glamik.webpconverter.util.FileUtils.getFileExtension;
 
 @Service
 public class FileService {
 
-
-    private final String programDir;
     private final File baseDir;
+    private final String programDir;
 
-    public static final String BASE_DIR = "WebpConverterImages";
     public static final String IN_DIR = "in";
     public static final String OUT_DIR = "out";
 
@@ -29,18 +24,11 @@ public class FileService {
     }
 
     private File createBaseDirectory() throws IOException {
-        File currentDirectory = new File(programDir);
-
-        File parentDir = currentDirectory.getParentFile();
-        if (parentDir == null) {
-            throw new IOException("Cannot determine the parent directory of the current directory: " + programDir);
-        }
-
-        File baseDirectory = new File(parentDir, BASE_DIR);
+        File baseDirectory = new File(programDir);
 
         if (!baseDirectory.exists() && !baseDirectory.mkdirs()) {
-                throw new IOException("Unable to create directory: " + baseDirectory.getAbsolutePath());
-            }
+            throw new IOException("Unable to create directory: " + baseDirectory.getAbsolutePath());
+        }
 
         return baseDirectory;
     }

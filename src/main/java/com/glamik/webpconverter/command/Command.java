@@ -1,5 +1,5 @@
 package com.glamik.webpconverter.command;
 
-public interface Command <ARGUMENT, RETURN>{
-    RETURN execute(ARGUMENT argument);
+public interface Command<A, R> {
+    R execute(A argument);
 }
