@@ -19,17 +19,13 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class ConverterAsyncController {
 
-    private final ConversionTaskService conversionTaskService;
-    private final FileService fileService;
+    private final SaveConversionTaskCommand saveConversionTaskCommand;
 
     @PostMapping("/convert-to-webp/async")
     public ResponseEntity<UUID> convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
-            SaveConversionTaskCommand saveConversionTaskCommand = new SaveConversionTaskCommand(conversionTaskService, fileService);
-            saveConversionTaskCommand.execute(imageFile);
-
-            ConversionTask savedTask = saveConversionTaskCommand.getSavedTask();
+        ConversionTask savedTask = saveConversionTaskCommand.execute(imageFile);
             return ResponseEntity.ok()
                     .body(savedTask.getId());
-
     }
+
 }
