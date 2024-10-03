@@ -1,6 +1,7 @@
 package com.glamik.webpconverter.model;
 
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
+import com.glamik.webpconverter.enums.ErrorMessage;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -34,4 +35,8 @@ public class ConversionTask {
 
     @Column(nullable = false)
     private LocalDateTime taskCreationDate;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    private ErrorMessage errorMessage;
 }
