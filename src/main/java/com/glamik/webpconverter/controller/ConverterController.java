@@ -29,6 +29,11 @@ public class ConverterController {
 
         try {
             String originalFilename = imageFile.getOriginalFilename();
+
+            if (originalFilename == null) {
+                return ResponseEntity.badRequest().body(null);
+            }
+
             String fileExtension = getFileExtension(originalFilename);
             String outputFileName = getFileNameWithoutExtension(originalFilename) + ".webp";
 

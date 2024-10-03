@@ -12,6 +12,7 @@ import java.util.UUID;
 @Setter
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class ConversionTask {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,5 +23,8 @@ public class ConversionTask {
     private ConversionTaskStatus status;
 
     @Column(nullable = false)
-    private String fileName;
+    private String originalName;
+
+    @Column(nullable = false)
+    private String filesystemName;
 }
