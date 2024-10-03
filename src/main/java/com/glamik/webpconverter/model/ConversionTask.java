@@ -4,6 +4,7 @@ import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,4 +28,10 @@ public class ConversionTask {
 
     @Column(nullable = false)
     private String filesystemName;
+
+    @Column
+    private String convertedName;
+
+    @Column(nullable = false)
+    private LocalDateTime taskCreationDate;
 }

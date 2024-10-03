@@ -6,6 +6,8 @@ import com.glamik.webpconverter.repository.ConversionTaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class ConversionTaskService {
@@ -17,6 +19,7 @@ public class ConversionTaskService {
                 .status(ConversionTaskStatus.PENDING)
                 .originalName(originalFileName)
                 .filesystemName(filesystemName)
+                .taskCreationDate(LocalDateTime.now())
                 .build();
 
         return conversionTaskRepository
