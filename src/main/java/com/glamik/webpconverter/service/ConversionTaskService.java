@@ -17,8 +17,6 @@ import java.util.List;
 public class ConversionTaskService {
 
     private final ConversionTaskRepository conversionTaskRepository;
-    private final FileService fileService;
-    private final ConverterService converterService;
 
     public ConversionTask saveConversionTask(String originalFileName, String filesystemName) {
         ConversionTask conversionTask = ConversionTask.builder()
@@ -32,15 +30,4 @@ public class ConversionTaskService {
                 .save(conversionTask);
     }
 
-    public void processConversionTask(ConversionTask task) throws IOException {
-            File filesystemFile = fileService.getInputFile(task.getFilesystemName());
-            File outputFile = converterService.convertToWebp(filesystemFile);
-
-            outputFile = fileService.saveOutputFile(outputFile);
-            Files.delete(filesystemFile.toPath());
-
-            task.setStatus(ConversionTaskStatus.SUCCESS);
-            task.setConvertedName(outputFile.getName());
-            conversionTaskRepository.save(task);
-    }
 }
