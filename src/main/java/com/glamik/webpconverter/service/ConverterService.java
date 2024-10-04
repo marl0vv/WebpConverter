@@ -22,7 +22,7 @@ public class ConverterService {
 
         BufferedImage image = ImageIO.read(inputFile);
         if (image == null) {
-            throw new IOException("Invalid image file: " + inputFile.getName());
+            throw new IOException("Failed to process the image. The file '" + inputFile.getName() + "' is not a valid (may be null) or could not be read.");
         }
 
         boolean success = ImageIO.write(image, "webp", outputFile);

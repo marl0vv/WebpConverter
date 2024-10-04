@@ -1,13 +1,15 @@
 package com.glamik.webpconverter.model;
 
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
+import com.glamik.webpconverter.enums.ErrorMessage;
+
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table
 @Getter
 @Setter
 @Builder
@@ -27,4 +29,12 @@ public class ConversionTask {
 
     @Column(nullable = false)
     private String filesystemName;
+
+    private String convertedName;
+
+    @Column(nullable = false)
+    private LocalDateTime taskCreationDate;
+
+    @Enumerated(EnumType.STRING)
+    private ErrorMessage errorMessage;
 }
