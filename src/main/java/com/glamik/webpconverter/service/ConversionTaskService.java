@@ -47,4 +47,8 @@ public class ConversionTaskService {
         conversionTaskRepository.save(task);
     }
 
+
+    public ConversionTask getConversionTask(UUID id) {
+        return conversionTaskRepository.getById(id);
+    }
 }
