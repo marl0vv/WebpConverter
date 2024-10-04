@@ -4,6 +4,7 @@ import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.enums.ErrorMessage;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.repository.ConversionTaskRepository;
+import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.ConverterService;
 import com.glamik.webpconverter.service.FileService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class ProcessConversionTaskCommand implements Command<ConversionTask, Con
     private final ConversionTaskRepository conversionTaskRepository;
     private final FileService fileService;
     private final ConverterService converterService;
+    private final ConversionTaskService conversionTaskService;
 
     public ConversionTaskStatus execute(ConversionTask task) {
         try {
@@ -30,20 +32,14 @@ public class ProcessConversionTaskCommand implements Command<ConversionTask, Con
 
             outputFile = fileService.saveOutputFile(outputFile);
             Files.delete(filesystemFile.toPath());
-
-            task.setStatus(ConversionTaskStatus.SUCCESS);
-            task.setConvertedName(outputFile.getName());
-            conversionTaskRepository.save(task);
+            
+            conversionTaskService.setConversionSuccessStatus(task, ConversionTaskStatus.SUCCESS, outputFile.getName());
         } catch (IOException e) {
             log.error("IO error occurred while processing file", e);
-            task.setStatus(ConversionTaskStatus.ERROR);
-            task.setErrorMessage(ErrorMessage.INPUT_FILE_IS_NULL_OR_CORRUPTED);
-            conversionTaskRepository.save(task);
+            conversionTaskService.setConversionErrorStatus(task, ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NULL_OR_CORRUPTED);
         } catch (IllegalArgumentException e) {
             log.error("Invalid argument", e);
-            task.setStatus(ConversionTaskStatus.ERROR);
-            task.setErrorMessage(ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
-            conversionTaskRepository.save(task);
+            conversionTaskService.setConversionErrorStatus(task, ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
         }
         return task.getStatus();
     }

@@ -20,7 +20,7 @@ public class ConversionTaskScheduler {
 
     @Scheduled(fixedDelay = 10000)
     public void processPendingConversionTasks() {
-        List<ConversionTask> pendingTasks = conversionTaskRepository.findByStatus(ConversionTaskStatus.PENDING);
+        List<ConversionTask> pendingTasks = conversionTaskRepository.findByStatusOrderByTaskCreationDate(ConversionTaskStatus.PENDING);
         for (ConversionTask task : pendingTasks) {
             processConversionTaskCommand.execute(task);
         }

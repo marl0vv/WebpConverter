@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface ConversionTaskRepository extends JpaRepository<ConversionTask, Long> {
 
-    List<ConversionTask> findByStatus(ConversionTaskStatus status);
+
+    List<ConversionTask> findByStatusOrderByTaskCreationDate(ConversionTaskStatus status);
 
 }
