@@ -35,6 +35,8 @@ public class ConversionTask {
     @Column(nullable = false)
     private LocalDateTime taskCreationDate;
 
+    private LocalDateTime taskProcessingDate;
+
     @Enumerated(EnumType.STRING)
     private ErrorMessage errorMessage;
 }

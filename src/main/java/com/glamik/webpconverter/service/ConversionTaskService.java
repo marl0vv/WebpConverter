@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -36,6 +37,7 @@ public class ConversionTaskService {
         ConversionTask task = conversionTaskRepository.getById(id);
         task.setStatus(status);
         task.setConvertedName(convertedName);
+        task.setTaskProcessingDate(LocalDateTime.now());
         conversionTaskRepository.save(task);
     }
 
@@ -51,4 +53,14 @@ public class ConversionTaskService {
     public ConversionTask getConversionTask(UUID id) {
         return conversionTaskRepository.getById(id);
     }
+
+    public List<ConversionTask> getPendingConversionTasks() {
+        return conversionTaskRepository.findByStatusOrderByTaskCreationDate(ConversionTaskStatus.PENDING);
+    }
+
+    public List<ConversionTask> getSuccessConversionTasks() {
+        return conversionTaskRepository.findByStatusOrderByTaskCreationDate(ConversionTaskStatus.SUCCESS);
+    }
+
+
 }
