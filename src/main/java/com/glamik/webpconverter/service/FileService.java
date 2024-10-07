@@ -72,4 +72,7 @@ public class FileService {
         return new File(getInDir(), filesystemName);
     }
 
+    public File getOutputFile(String convertedName) {
+        return new File(getOutDir(), convertedName);
+    }
 }
