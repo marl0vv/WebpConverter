@@ -91,6 +91,10 @@
                 <configuration>
                     <source>1.8</source> <!-- depending on your project -->
                     <target>1.8</target> <!-- depending on your project -->
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
+
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.mapstruct</groupId>

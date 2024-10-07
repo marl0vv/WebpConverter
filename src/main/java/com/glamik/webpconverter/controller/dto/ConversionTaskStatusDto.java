@@ -1,16 +1,15 @@
-package com.glamik.webpconverter.dto.response;
+package com.glamik.webpconverter.controller.dto;
 
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.enums.ErrorMessage;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Getter
-public class ConversionTaskStatusResponse {
+@Setter
+public class ConversionTaskStatusDto {
 
     private ConversionTaskStatus status;
     private ErrorMessage errorMessage;

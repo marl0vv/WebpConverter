@@ -1,13 +1,13 @@
 package com.glamik.webpconverter.controller;
 
 import com.glamik.webpconverter.command.SaveConversionTaskCommand;
-import com.glamik.webpconverter.dto.response.ConversionTaskStatusResponse;
+import com.glamik.webpconverter.controller.dto.ConversionTaskStatusDto;
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
-import com.glamik.webpconverter.enums.ErrorMessage;
 import com.glamik.webpconverter.model.ConversionTask;
 
 import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.FileService;
+import com.glamik.webpconverter.util.ConversionTaskStatusMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpHeaders;
@@ -27,6 +27,7 @@ public class ConverterAsyncController {
     private final SaveConversionTaskCommand saveConversionTaskCommand;
     private final ConversionTaskService conversionTaskService;
     private final FileService fileService;
+    private final ConversionTaskStatusMapper conversionTaskStatusMapper;
 
     @PostMapping("/convert-to-webp/async")
     public ResponseEntity<UUID> convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
@@ -36,16 +37,9 @@ public class ConverterAsyncController {
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}/status")
-    public ResponseEntity<ConversionTaskStatusResponse> getTaskStatus(@PathVariable UUID taskId) {
+    public ConversionTaskStatusDto getTaskStatus(@PathVariable UUID taskId) {
         ConversionTask conversionTask = conversionTaskService.getConversionTask(taskId);
-        ConversionTaskStatus status = conversionTask.getStatus();
-
-        ConversionTaskStatusResponse response = ConversionTaskStatusResponse.builder()
-                .status(status)
-                .errorMessage(status == ConversionTaskStatus.ERROR ? conversionTask.getErrorMessage() : null)
-                .build();
-
-        return ResponseEntity.ok(response);
+        return conversionTaskStatusMapper.mapToStatusDto(conversionTask);
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}")
