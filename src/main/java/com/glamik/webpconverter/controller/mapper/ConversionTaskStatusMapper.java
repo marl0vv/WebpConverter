@@ -9,5 +9,5 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", imports = {ConversionTaskStatus.class})
 public interface ConversionTaskStatusMapper {
     @Mapping(target = "errorMessage", expression = "java(conversionTask.getStatus() == ConversionTaskStatus.ERROR ? conversionTask.getErrorMessage() : null)")
-    public ConversionTaskStatusDto mapToStatusDto(ConversionTask conversionTask);
+    ConversionTaskStatusDto mapToStatusDto(ConversionTask conversionTask);
 }

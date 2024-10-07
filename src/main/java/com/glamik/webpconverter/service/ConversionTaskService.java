@@ -5,6 +5,7 @@ import com.glamik.webpconverter.enums.ErrorMessage;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.repository.ConversionTaskRepository;
 
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class ConversionTaskService {
 
 
     @Transactional
-    public ConversionTask saveConversionTask(String originalFileName, String filesystemName) {
+    public ConversionTask saveConversionTask(@NonNull String originalFileName, @NonNull String filesystemName) {
         ConversionTask conversionTask = ConversionTask.builder()
                 .status(ConversionTaskStatus.PENDING)
                 .originalName(originalFileName)
@@ -38,7 +39,7 @@ public class ConversionTaskService {
     }
 
     @Transactional
-    public void setConversionSuccessStatus(UUID id, ConversionTaskStatus status, String convertedName) {
+    public void setConversionSuccessStatus(@NonNull UUID id, @NonNull ConversionTaskStatus status, @NonNull String convertedName) {
         ConversionTask task = conversionTaskRepository.getById(id);
         task.setStatus(status);
         task.setConvertedName(convertedName);
@@ -47,22 +48,24 @@ public class ConversionTaskService {
     }
 
     @Transactional
-    public void setConversionErrorStatus(UUID id, ConversionTaskStatus status, ErrorMessage errorMessage) {
+    public void setConversionErrorStatus(@NonNull UUID id, @NonNull ConversionTaskStatus status, ErrorMessage errorMessage) {
         ConversionTask task = conversionTaskRepository.getById(id);
         task.setStatus(status);
         task.setErrorMessage(errorMessage);
         conversionTaskRepository.save(task);
     }
 
-
-    public ConversionTask getConversionTask(UUID id) {
+    @Transactional
+    public ConversionTask getConversionTask(@NonNull UUID id) {
         return conversionTaskRepository.getById(id);
     }
 
+    @Transactional
     public List<ConversionTask> getPendingConversionTasks() {
         return conversionTaskRepository.findByStatusOrderByTaskCreationDate(ConversionTaskStatus.PENDING);
     }
 
+    @Transactional
     public List<ConversionTask> getSuccessConversionTasksForDeletion() {
         return conversionTaskRepository.findTasksForDeletionNative(deletionTimeMinutes);
     }
