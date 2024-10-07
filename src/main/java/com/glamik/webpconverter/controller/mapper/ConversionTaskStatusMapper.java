@@ -1,4 +1,4 @@
-package com.glamik.webpconverter.util;
+package com.glamik.webpconverter.controller.mapper;
 
 import com.glamik.webpconverter.controller.dto.ConversionTaskStatusDto;
 import com.glamik.webpconverter.enums.ConversionTaskStatus;

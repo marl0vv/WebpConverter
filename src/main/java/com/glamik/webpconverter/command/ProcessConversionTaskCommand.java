@@ -6,7 +6,6 @@ import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.ConverterService;
 import com.glamik.webpconverter.service.FileService;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,5 +42,4 @@ public class ProcessConversionTaskCommand implements VoidCommand<ConversionTask>
             conversionTaskService.setConversionErrorStatus(task.getId(), ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
         }
     }
-
 }

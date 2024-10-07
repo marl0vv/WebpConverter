@@ -7,7 +7,7 @@ import com.glamik.webpconverter.model.ConversionTask;
 
 import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.FileService;
-import com.glamik.webpconverter.util.ConversionTaskStatusMapper;
+import com.glamik.webpconverter.controller.mapper.ConversionTaskStatusMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.PathResource;
 import org.springframework.http.HttpHeaders;

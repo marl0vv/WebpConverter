@@ -6,6 +6,7 @@ import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.repository.ConversionTaskRepository;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,10 @@ import java.util.UUID;
 public class ConversionTaskService {
 
     private final ConversionTaskRepository conversionTaskRepository;
+
+    @Value("${deletion.time.minutes}")
+    private int deletionTimeMinutes;
+
 
     @Transactional
     public ConversionTask saveConversionTask(String originalFileName, String filesystemName) {
@@ -58,8 +63,8 @@ public class ConversionTaskService {
         return conversionTaskRepository.findByStatusOrderByTaskCreationDate(ConversionTaskStatus.PENDING);
     }
 
-    public List<ConversionTask> getSuccessConversionTasks() {
-        return conversionTaskRepository.findByStatusOrderByTaskCreationDate(ConversionTaskStatus.SUCCESS);
+    public List<ConversionTask> getSuccessConversionTasksForDeletion() {
+        return conversionTaskRepository.findTasksForDeletionNative(deletionTimeMinutes);
     }
 
 
