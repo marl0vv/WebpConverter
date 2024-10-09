@@ -6,7 +6,6 @@ import org.springframework.boot.test.util.TestPropertyValues;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.TestPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -14,9 +13,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @SpringBootTest
 @Testcontainers
 @AutoConfigureMockMvc(addFilters = false)
-@ContextConfiguration(initializers = {SpringBootApplicationTest.Initializer.class})
-@TestPropertySource(properties = {"spring.config.location=classpath:application-properties"})
-public class SpringBootApplicationTest {
+@ContextConfiguration(initializers = {BaseSpringBootApplicationTest.Initializer.class})
+public abstract class BaseSpringBootApplicationTest {
 
     private static final String DATABASE_NAME = "webpConverter";
 

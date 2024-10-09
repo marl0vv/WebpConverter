@@ -17,7 +17,7 @@ public class ConversionTaskProcessingScheduler {
     private final ConversionTaskService conversionTaskService;
     private final ProcessConversionTaskCommand processConversionTaskCommand;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelayString = "${processing.time.millis}")
     public void processPendingConversionTasks() {
         List<ConversionTask> pendingTasks = conversionTaskService.getPendingConversionTasks();
         for (ConversionTask task : pendingTasks) {
