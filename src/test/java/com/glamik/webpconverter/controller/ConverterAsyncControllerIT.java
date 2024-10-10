@@ -11,13 +11,17 @@ import com.glamik.webpconverter.repository.ConversionTaskRepository;
 import com.glamik.webpconverter.service.FileService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.MimeType;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -110,13 +114,19 @@ class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
     @Test
     @DataSet(value = "example-data-single-success.json", cleanAfter = true, cleanBefore = true)
     void getConversionTaskStatusSuccess() throws Exception {
+        // Arrange
         UUID exampleId = UUID.fromString("607c09c6-3032-4711-a018-118d8f709c8c");
+
+        // Act & Assert
         getStatusRequest(exampleId, ConversionTaskStatus.SUCCESS, null);
     }
 
     @Test
     void getConversionTaskStatusNotFound() throws Exception {
+        // Arrange
         UUID exampleId = UUID.fromString("a18bd95f-3983-4de7-97b5-f340e5f5aadd");
+
+        // Act & Assert
         mockMvc.perform(get("/convert-to-webp/async/{taskId}/status", exampleId))
                 .andExpect(status().isNotFound());
     }
@@ -124,15 +134,56 @@ class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
     @Test
     @DataSet(value = "example-data-single-error-not-image.json", cleanAfter = true, cleanBefore = true)
     void getConversionTaskStatusErrorNotAnImage() throws Exception {
+        // Arrange
         UUID exampleId = UUID.fromString("718091d1-70c6-43df-b8ce-fb0eaf6fcf30");
+
+        // Act & Assert
         getStatusRequest(exampleId, ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
     }
 
     @Test
     @DataSet(value = "example-data-single-error-null.json", cleanAfter = true, cleanBefore = true)
     void getConversionTaskStatusErrorNullOrCorrupted() throws Exception {
+        // Arrange
         UUID exampleId = UUID.fromString("718091d1-70c6-43df-b8ce-fb0eaf6fcf30");
+
+        // Act & Assert
         getStatusRequest(exampleId, ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NULL_OR_CORRUPTED);
     }
 
+
+    @Test
+    @DataSet(value = "example-data-single-success.json", cleanAfter = true, cleanBefore = true)
+    void getConvertedImageSuccess(@Value("${base.directory}") String programDir) throws Exception {
+        // Arrange
+        UUID exampleId = UUID.fromString("607c09c6-3032-4711-a018-118d8f709c8c");
+
+        File outFolder = new File(programDir, "out");
+
+        File resource = new ClassPathResource("test-image.jpg").getFile();
+        File convertedFile = new File(outFolder, "output-38968635-4feb-4d22-9503-06136521df3a.webp");
+        Files.copy(resource.toPath(), convertedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+        // Act & Assert
+        var response = mockMvc.perform(get("/convert-to-webp/async/{taskId}", exampleId))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.asMediaType(MimeType.valueOf("image/webp"))))
+                .andReturn()
+                .getResponse();
+
+        String contentDisposition = response.getHeader("Content-Disposition");
+        assertThat(contentDisposition).isNotEmpty().contains("attachment;").contains("test-image.webp");
+
+    }
+
+    @Test
+    @DataSet(value = "example-data-single-error-not-image.json", cleanAfter = true, cleanBefore = true)
+    void getConvertedImageError() throws Exception {
+        // Arrange
+        UUID exampleId = UUID.fromString("718091d1-70c6-43df-b8ce-fb0eaf6fcf30");
+
+        // Act & Assert
+        mockMvc.perform(get("/convert-to-webp/async/{taskId}", exampleId))
+                .andExpect(status().isNotFound());
+    }
 }
