@@ -5,6 +5,8 @@ import com.glamik.webpconverter.model.ConversionTask;
 
 import com.glamik.webpconverter.service.ConversionTaskService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,12 +14,13 @@ import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@ConditionalOnProperty(name = "processing.time.millis")
 public class ConversionTaskProcessingScheduler {
 
     private final ConversionTaskService conversionTaskService;
     private final ProcessConversionTaskCommand processConversionTaskCommand;
 
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(fixedDelayString = "${processing.time.millis}")
     public void processPendingConversionTasks() {
         List<ConversionTask> pendingTasks = conversionTaskService.getPendingConversionTasks();
         for (ConversionTask task : pendingTasks) {

@@ -1,0 +1,13 @@
+{
+  "conversion_task": [
+    {
+      "id": "607c09c6-3032-4711-a018-118d8f709c8c",
+      "status": "SUCCESS",
+      "converted_name": "output-38968635-4feb-4d22-9503-06136521df3a.webp",
+      "filesystem_name": "input-b129395d-c385-4727-b566-0d5e85591a39.png",
+      "original_name": "test-image",
+      "task_creation_date": "2024-10-07 12:42:10.042088",
+      "task_processing_date": "2023-10-01 14:42:12.013247"
+    }
+  ]
+}
