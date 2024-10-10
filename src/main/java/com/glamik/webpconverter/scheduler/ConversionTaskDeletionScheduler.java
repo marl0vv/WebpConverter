@@ -9,23 +9,25 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-@ConditionalOnProperty(name = "processing.time.millis")
+@ConditionalOnProperty(name = "deletion.time.millis")
 public class ConversionTaskDeletionScheduler {
 
     private final ConversionTaskService conversionTaskService;
     private final FileService fileService;
 
     @Scheduled(initialDelayString = "${deletion.time.millis}", fixedDelayString = "${deletion.time.millis}")
-    public void deleteOldConvertedImages() {
+    public void deleteOldConvertedImages() throws IOException {
 
         List<ConversionTask> pendingTasks = conversionTaskService.getSuccessConversionTasksForDeletion();
         for (ConversionTask task : pendingTasks) {
             File convertedFile = fileService.getOutputFile(task.getConvertedName());
-            convertedFile.delete();
+            Files.delete(convertedFile.toPath());
         }
     }
 

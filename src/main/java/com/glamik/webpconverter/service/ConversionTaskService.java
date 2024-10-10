@@ -21,9 +21,8 @@ public class ConversionTaskService {
 
     private final ConversionTaskRepository conversionTaskRepository;
 
-    @Value("${deletion.time.minutes}")
+    @Value("${deletion.time.minutes:1}")
     private int deletionTimeMinutes;
-
 
     @Transactional
     public ConversionTask saveConversionTask(@NonNull String originalFileName, @NonNull String filesystemName) {

@@ -1,5 +1,7 @@
 package com.glamik.webpconverter;
 
+import com.github.database.rider.core.api.configuration.DBUnit;
+import com.github.database.rider.junit5.api.DBRider;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.util.TestPropertyValues;
@@ -14,6 +16,8 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @Testcontainers
 @AutoConfigureMockMvc(addFilters = false)
 @ContextConfiguration(initializers = {BaseSpringBootApplicationTest.Initializer.class})
+@DBRider
+@DBUnit(caseSensitiveTableNames = true)
 public abstract class BaseSpringBootApplicationTest {
 
     private static final String DATABASE_NAME = "webpConverter";

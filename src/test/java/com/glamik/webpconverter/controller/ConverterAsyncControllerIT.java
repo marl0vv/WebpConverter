@@ -1,8 +1,6 @@
 package com.glamik.webpconverter.controller;
 
-import com.github.database.rider.core.api.configuration.DBUnit;
 import com.github.database.rider.core.api.dataset.DataSet;
-import com.github.database.rider.junit5.api.DBRider;
 import com.glamik.webpconverter.BaseSpringBootApplicationTest;
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.enums.ErrorMessage;
@@ -29,8 +27,7 @@ import static org.hamcrest.Matchers.matchesPattern;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DBRider
-@DBUnit(caseSensitiveTableNames = true)
+
 class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
 
     private static final String CONVERT_TO_WEBP_ASYNC_URL = "/convert-to-webp/async";

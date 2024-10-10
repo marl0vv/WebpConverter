@@ -62,6 +62,6 @@ class ConverterServiceTests {
         // Act & Assert
         assertThatThrownBy(() -> converterService.convertToWebp(emptyFile))
                 .isInstanceOf(IOException.class)
-                .hasMessageContaining("Invalid image file: " + emptyFile.getName());
+                .hasMessageContaining("Failed to process the image. The file '" + emptyFile.getName() + "' is not a valid (may be null) or could not be read.");
     }
 }
