@@ -1,0 +1,7 @@
+conversion_task:
+  - id: "718091d1-70c6-43df-b8ce-fb0eaf6fcf30"
+    status: "ERROR"
+    error_message: "INPUT_FILE_IS_NULL_OR_CORRUPTED"
+    filesystem_name: "input-9c59c1e3-d71a-458f-a17c-d8241dc9236a.png"
+    original_name: "png null test"
+    task_creation_date: "2024-10-04 11:24:18.465885"
