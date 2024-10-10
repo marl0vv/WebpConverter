@@ -94,7 +94,6 @@ class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
         assertThatFileCreatedOnDisc(task.getFilesystemName());
     }
 
-
     private void getStatusRequest(UUID exampleId, ConversionTaskStatus expectedStatus, ErrorMessage expectedErrorMessage) throws Exception {
         var resultActions = mockMvc.perform(get("/convert-to-webp/async/{taskId}/status", exampleId))
                 .andExpect(status().isOk())
@@ -109,23 +108,31 @@ class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
     }
 
     @Test
-    @DataSet("example-data-single-success.yml")
+    @DataSet(value = "example-data-single-success.json", cleanAfter = true, cleanBefore = true)
     void getConversionTaskStatusSuccess() throws Exception {
         UUID exampleId = UUID.fromString("607c09c6-3032-4711-a018-118d8f709c8c");
         getStatusRequest(exampleId, ConversionTaskStatus.SUCCESS, null);
     }
 
     @Test
-    @DataSet("example-data-single-error-not-image.yml")
+    void getConversionTaskStatusNotFound() throws Exception {
+        UUID exampleId = UUID.fromString("a18bd95f-3983-4de7-97b5-f340e5f5aadd");
+        mockMvc.perform(get("/convert-to-webp/async/{taskId}/status", exampleId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DataSet(value = "example-data-single-error-not-image.json", cleanAfter = true, cleanBefore = true)
     void getConversionTaskStatusErrorNotAnImage() throws Exception {
         UUID exampleId = UUID.fromString("718091d1-70c6-43df-b8ce-fb0eaf6fcf30");
         getStatusRequest(exampleId, ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
     }
 
     @Test
-    @DataSet("example-data-single-error-null.yml")
+    @DataSet(value = "example-data-single-error-null.json", cleanAfter = true, cleanBefore = true)
     void getConversionTaskStatusErrorNullOrCorrupted() throws Exception {
         UUID exampleId = UUID.fromString("718091d1-70c6-43df-b8ce-fb0eaf6fcf30");
         getStatusRequest(exampleId, ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NULL_OR_CORRUPTED);
     }
+
 }

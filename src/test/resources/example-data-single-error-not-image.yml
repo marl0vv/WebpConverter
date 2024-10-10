@@ -1,7 +1,0 @@
-conversion_task:
-  - id: "718091d1-70c6-43df-b8ce-fb0eaf6fcf30"
-    status: "ERROR"
-    error_message: "INPUT_FILE_IS_NOT_AN_IMAGE"
-    filesystem_name: "input-b02607e4-75e3-49ac-a699-e621ab9e058b.txt"
-    original_name: "test"
-    task_creation_date: "2024-10-09 15:39:10.058175"

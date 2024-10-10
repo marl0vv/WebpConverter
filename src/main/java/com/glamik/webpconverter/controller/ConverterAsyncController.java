@@ -37,9 +37,13 @@ public class ConverterAsyncController {
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}/status")
-    public ConversionTaskStatusDto getTaskStatus(@PathVariable UUID taskId) {
+    public ResponseEntity<ConversionTaskStatusDto> getTaskStatus(@PathVariable UUID taskId) {
         ConversionTask conversionTask = conversionTaskService.getConversionTask(taskId);
-        return conversionTaskStatusMapper.mapToStatusDto(conversionTask);
+        if (conversionTask == null) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok()
+                .body(conversionTaskStatusMapper.mapToStatusDto(conversionTask));
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}")
