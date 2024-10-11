@@ -3,6 +3,7 @@ package com.glamik.webpconverter.controller;
 import com.glamik.webpconverter.command.SaveConversionTaskCommand;
 import com.glamik.webpconverter.controller.dto.ConversionTaskStatusDto;
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
+import com.glamik.webpconverter.exception.ConversionTaskNotFoundException;
 import com.glamik.webpconverter.model.ConversionTask;
 
 import com.glamik.webpconverter.service.ConversionTaskService;
@@ -37,17 +38,13 @@ public class ConverterAsyncController {
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}/status")
-    public ResponseEntity<ConversionTaskStatusDto> getTaskStatus(@PathVariable UUID taskId) {
+    public ConversionTaskStatusDto getTaskStatus(@PathVariable UUID taskId) throws ConversionTaskNotFoundException {
         ConversionTask conversionTask = conversionTaskService.getConversionTask(taskId);
-        if (conversionTask == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok()
-                .body(conversionTaskStatusMapper.mapToStatusDto(conversionTask));
+        return conversionTaskStatusMapper.mapToStatusDto(conversionTask);
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}")
-    public ResponseEntity<PathResource> getConvertedImage(@PathVariable UUID taskId) {
+    public ResponseEntity<PathResource> getConvertedImage(@PathVariable UUID taskId) throws ConversionTaskNotFoundException {
         ConversionTask conversionTask = conversionTaskService.getConversionTask(taskId);
 
         if (conversionTask.getStatus() != ConversionTaskStatus.SUCCESS) {

@@ -2,6 +2,7 @@ package com.glamik.webpconverter.service;
 
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.enums.ErrorMessage;
+import com.glamik.webpconverter.exception.ConversionTaskNotFoundException;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.repository.ConversionTaskRepository;
 
@@ -55,8 +56,12 @@ public class ConversionTaskService {
     }
 
     @Transactional
-    public ConversionTask getConversionTask(@NonNull UUID id) {
-        return conversionTaskRepository.getById(id);
+    public ConversionTask getConversionTask(@NonNull UUID id) throws ConversionTaskNotFoundException {
+        ConversionTask conversionTask = conversionTaskRepository.getById(id);
+        if (conversionTask == null) {
+            throw new ConversionTaskNotFoundException("Couldn't find conversion task with id: " + id);
+        }
+        return conversionTask;
     }
 
     @Transactional
