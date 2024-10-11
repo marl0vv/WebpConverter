@@ -36,4 +36,9 @@ public class ExceptionApiHandler {
         return ErrorDto.of(e.getMessage());
     }
 
+    @ExceptionHandler(Exception.class)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto defaultException(Exception e) {
+        return ErrorDto.of(e.getMessage());
+    }
 }
