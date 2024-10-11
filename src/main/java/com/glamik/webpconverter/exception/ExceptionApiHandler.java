@@ -1,6 +1,7 @@
 package com.glamik.webpconverter.exception;
 
 import com.glamik.webpconverter.exception.dto.ErrorDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -10,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.util.NoSuchElementException;
 
 @RestControllerAdvice
+@Slf4j
 public class ExceptionApiHandler {
 
     @ExceptionHandler(NoSuchElementException.class)
@@ -27,6 +29,7 @@ public class ExceptionApiHandler {
     @ExceptionHandler(DirectoryCreationException.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto directoryCreationException(DirectoryCreationException e) {
+        log.error(e.getMessage(), e);
         return ErrorDto.of(e.getMessage());
     }
 
@@ -39,6 +42,7 @@ public class ExceptionApiHandler {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto defaultException(Exception e) {
+        log.error(e.getMessage(), e);
         return ErrorDto.of(e.getMessage());
     }
 }
