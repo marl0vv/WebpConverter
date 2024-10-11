@@ -9,7 +9,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 import java.util.UUID;
 
-public interface ConversionTaskRepository extends JpaRepository<ConversionTask, Long> {
+public interface ConversionTaskRepository extends JpaRepository<ConversionTask, UUID> {
 
     List<ConversionTask> findByStatusOrderByTaskCreationDate(ConversionTaskStatus status);
 

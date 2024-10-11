@@ -2,7 +2,6 @@ package com.glamik.webpconverter.service;
 
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.enums.ErrorMessage;
-import com.glamik.webpconverter.exception.ConversionTaskNotFoundException;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.repository.ConversionTaskRepository;
 
@@ -14,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -56,12 +57,9 @@ public class ConversionTaskService {
     }
 
     @Transactional
-    public ConversionTask getConversionTask(@NonNull UUID id) throws ConversionTaskNotFoundException {
-        ConversionTask conversionTask = conversionTaskRepository.getById(id);
-        if (conversionTask == null) {
-            throw new ConversionTaskNotFoundException("Couldn't find conversion task with id: " + id);
-        }
-        return conversionTask;
+    public ConversionTask getConversionTask(@NonNull UUID id) {
+        return conversionTaskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Couldn't find conversion task with id: " + id));
     }
 
     @Transactional
@@ -73,6 +71,4 @@ public class ConversionTaskService {
     public List<ConversionTask> getSuccessConversionTasksForDeletion() {
         return conversionTaskRepository.findTasksForDeletionNative(deletionTimeMinutes);
     }
-
-
 }
