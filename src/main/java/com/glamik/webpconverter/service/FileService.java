@@ -1,5 +1,7 @@
 package com.glamik.webpconverter.service;
 
+import com.glamik.webpconverter.exception.DirectoryCreationException;
+import com.glamik.webpconverter.exception.FileSaveException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -19,17 +21,17 @@ public class FileService {
     public static final String IN_DIR = "in";
     public static final String OUT_DIR = "out";
 
-    public FileService(@Value("${base.directory}") String programDir) throws IOException {
+    public FileService(@Value("${base.directory}") String programDir) {
         this.programDir = programDir;
         this.baseDir = createBaseDirectory();
         createDirectories();
     }
 
-    private File createBaseDirectory() throws IOException {
+    private File createBaseDirectory() {
         File baseDirectory = new File(programDir);
 
         if (!baseDirectory.exists() && !baseDirectory.mkdirs()) {
-            throw new IOException("Unable to create directory: " + baseDirectory.getAbsolutePath());
+            throw new DirectoryCreationException("Unable to create base directory: " + baseDirectory.getAbsolutePath());
         }
 
         return baseDirectory;
@@ -43,28 +45,38 @@ public class FileService {
         return new File(baseDir, OUT_DIR);
     }
 
-    private void createDirectories() throws IOException {
+    private void createDirectories() {
         if (!getInDir().exists() && !getInDir().mkdirs()) {
-            throw new IOException("Failed to create input directory: " + getInDir().getAbsolutePath());
+            throw new DirectoryCreationException("Failed to create directory for input images: " + getInDir().getAbsolutePath());
         }
         if (!getOutDir().exists() && !getOutDir().mkdirs()) {
-            throw new IOException("Failed to create output directory: " + getOutDir().getAbsolutePath());
+            throw new DirectoryCreationException("Failed to create directory for output images: " + getOutDir().getAbsolutePath());
         }
     }
 
-    public File saveInputFile(MultipartFile imageFile, String fileExtension) throws IOException {
+    public File saveInputFile(MultipartFile imageFile, String fileExtension) {
         String newFileName = "input-" + UUID.randomUUID() + fileExtension;
         File inputFile = new File(getInDir(), newFileName);
 
-        imageFile.transferTo(inputFile);
+        try {
+            imageFile.transferTo(inputFile);
+        } catch (IOException e) {
+            throw new FileSaveException("Unable to write input file: " + inputFile.getAbsolutePath());
+        }
+
         return inputFile;
     }
 
-    public File saveOutputFile(File imageFile) throws IOException {
+    public File saveOutputFile(File imageFile) {
         String newFileName = "output-" + UUID.randomUUID() + ".webp";
         File outputFile = new File(getOutDir(), newFileName);
 
-        Files.copy(imageFile.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        try {
+            Files.copy(imageFile.toPath(), outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            throw new FileSaveException("Unable to write output file: " + outputFile.getAbsolutePath());
+        }
+
         return outputFile;
     }
 
