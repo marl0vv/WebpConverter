@@ -29,4 +29,11 @@ public class ExceptionApiHandler {
     public ErrorDto directoryCreationException(DirectoryCreationException e) {
         return ErrorDto.of(e.getMessage());
     }
+
+    @ExceptionHandler(ConversionStatusIsErrorException.class)
+    @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorDto conversionStatusIsErrorException(ConversionStatusIsErrorException e) {
+        return ErrorDto.of(e.getMessage());
+    }
+
 }

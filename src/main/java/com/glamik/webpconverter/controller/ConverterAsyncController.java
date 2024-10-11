@@ -3,6 +3,7 @@ package com.glamik.webpconverter.controller;
 import com.glamik.webpconverter.command.SaveConversionTaskCommand;
 import com.glamik.webpconverter.controller.dto.ConversionTaskStatusDto;
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
+import com.glamik.webpconverter.exception.ConversionStatusIsErrorException;
 import com.glamik.webpconverter.model.ConversionTask;
 
 import com.glamik.webpconverter.service.ConversionTaskService;
@@ -30,10 +31,9 @@ public class ConverterAsyncController {
     private final ConversionTaskStatusMapper conversionTaskStatusMapper;
 
     @PostMapping("/convert-to-webp/async")
-    public ResponseEntity<UUID> convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
+    public UUID convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
         ConversionTask savedTask = saveConversionTaskCommand.execute(imageFile);
-        return ResponseEntity.ok()
-                .body(savedTask.getId());
+        return savedTask.getId();
     }
 
     @GetMapping("/convert-to-webp/async/{taskId}/status")
@@ -47,7 +47,7 @@ public class ConverterAsyncController {
         ConversionTask conversionTask = conversionTaskService.getConversionTask(taskId);
 
         if (conversionTask.getStatus() != ConversionTaskStatus.SUCCESS) {
-            return ResponseEntity.notFound().build();
+            throw new ConversionStatusIsErrorException("Error during image conversion: " + conversionTask.getErrorMessage());
         }
 
         File outputFile = fileService.getOutputFile(conversionTask.getConvertedName());
