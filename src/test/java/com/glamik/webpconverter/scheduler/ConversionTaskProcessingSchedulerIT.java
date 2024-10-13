@@ -6,6 +6,7 @@ import com.glamik.webpconverter.enums.ErrorMessage;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.repository.ConversionTaskRepository;
 import com.glamik.webpconverter.service.FileService;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
@@ -16,6 +17,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -93,11 +95,13 @@ class ConversionTaskProcessingSchedulerIT extends BaseSpringBootApplicationTest 
 
     private ConversionTask waitForTaskConversion(UUID uuid, ConversionTaskStatus expectedStatus) {
         await().atMost(20, TimeUnit.SECONDS).until(() -> {
-            ConversionTask task = conversionTaskRepository.getById(uuid);
-            return task != null && task.getStatus() == expectedStatus;
+            Optional<ConversionTask> task = conversionTaskRepository.findById(uuid);
+            return task.isPresent() && task.get().getStatus() == expectedStatus;
         });
 
-        ConversionTask task = conversionTaskRepository.getById(uuid);
+        ConversionTask task = conversionTaskRepository.findById(uuid)
+                .orElseThrow(() -> new AssertionError("ConversionTask with UUID " + uuid + " not found"));
+
         assertThat(task).isNotNull();
         return task;
     }

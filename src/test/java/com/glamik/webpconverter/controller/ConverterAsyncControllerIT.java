@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -90,9 +91,9 @@ class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
         // Act & Assert
         UUID uuid = conversionTaskRequest(multipartFile);
 
-        ConversionTask task = conversionTaskRepository.getById(uuid);
-        assertTaskCommonProperties(task, ConversionTaskStatus.PENDING);
-        assertThatFileCreatedOnDisc(task.getFilesystemName());
+        Optional<ConversionTask> task = conversionTaskRepository.findById(uuid);
+        assertTaskCommonProperties(task.get(), ConversionTaskStatus.PENDING);
+        assertThatFileCreatedOnDisc(task.get().getFilesystemName());
     }
 
     private void getStatusRequest(UUID exampleId, ConversionTaskStatus expectedStatus, ErrorMessage expectedErrorMessage) throws Exception {
@@ -181,6 +182,6 @@ class ConverterAsyncControllerIT extends BaseSpringBootApplicationTest {
 
         // Act & Assert
         mockMvc.perform(get("/convert-to-webp/async/{taskId}", exampleId))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
     }
 }

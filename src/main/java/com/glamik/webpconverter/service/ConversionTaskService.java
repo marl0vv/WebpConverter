@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -56,7 +58,8 @@ public class ConversionTaskService {
 
     @Transactional
     public ConversionTask getConversionTask(@NonNull UUID id) {
-        return conversionTaskRepository.getById(id);
+        return conversionTaskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Couldn't find conversion task with id: " + id));
     }
 
     @Transactional
@@ -68,6 +71,4 @@ public class ConversionTaskService {
     public List<ConversionTask> getSuccessConversionTasksForDeletion() {
         return conversionTaskRepository.findTasksForDeletionNative(deletionTimeMinutes);
     }
-
-
 }

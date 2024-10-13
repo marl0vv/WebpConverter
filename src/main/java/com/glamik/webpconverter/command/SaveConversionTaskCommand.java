@@ -5,7 +5,6 @@ import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.FileService;
 
 import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,7 +22,6 @@ public class SaveConversionTaskCommand implements Command<MultipartFile, Convers
     private final FileService fileService;
 
     @Override
-    @SneakyThrows
     public ConversionTask execute(MultipartFile imageFile) {
         String originalFilename = Objects.requireNonNull(imageFile.getOriginalFilename(), "File must have a name");
 
