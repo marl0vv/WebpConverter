@@ -19,6 +19,4 @@ public interface ConversionTaskRepository extends JpaRepository<ConversionTask, 
     )
     List<ConversionTask> findTasksForDeletionNative(@Param("deletionTimeMinutes") int deletionTimeMinutes);
 
-    ConversionTask getById(UUID id);
-
 }
