@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor (staticName = "of")
+@AllArgsConstructor(staticName = "of")
 public class ErrorDto {
     private String message;
 }

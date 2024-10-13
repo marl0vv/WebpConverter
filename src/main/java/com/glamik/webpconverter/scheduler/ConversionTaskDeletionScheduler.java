@@ -1,6 +1,5 @@
 package com.glamik.webpconverter.scheduler;
 
-import com.glamik.webpconverter.exception.FileDeleteException;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.FileService;
