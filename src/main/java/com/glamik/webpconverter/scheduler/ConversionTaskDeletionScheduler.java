@@ -31,8 +31,8 @@ public class ConversionTaskDeletionScheduler {
         for (ConversionTask task : pendingTasks) {
             File convertedFile = fileService.getOutputFile(task.getConvertedName());
             try {
-                Files.delete(convertedFile.toPath());
                 conversionTaskService.setConversionDeletedStatus(task.getId());
+                Files.delete(convertedFile.toPath());
             } catch (NoSuchFileException e) {
                 log.warn("File not found, might have already been deleted: {}", convertedFile.getAbsolutePath(), e);
             } catch (IOException e) {

@@ -58,10 +58,12 @@ public class ConversionTaskService {
 
     @Transactional
     public void setConversionDeletedStatus(@NonNull UUID id) {
-        Optional<ConversionTask> task = conversionTaskRepository.findById(id);
-        task.ifPresent(conversionTask -> conversionTask.setStatus(ConversionTaskStatus.DELETED));
-        conversionTaskRepository.save(task.get());
+        ConversionTask conversionTask = conversionTaskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Couldn't find conversion task with id: " + id));
+
+        conversionTask.setStatus(ConversionTaskStatus.DELETED);
     }
+
     @Transactional
     public ConversionTask getConversionTask(@NonNull UUID id) {
         return conversionTaskRepository.findById(id)
