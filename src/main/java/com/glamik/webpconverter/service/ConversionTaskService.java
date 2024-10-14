@@ -14,13 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import java.util.UUID;
 
+/**
+ * Service that handles what is written or changed about conversion tasks in a repository.
+ */
 @Service
 @RequiredArgsConstructor
 public class ConversionTaskService {
 
+    private static final String COULD_NOT_FIND_ID_EXCEPTION_MESSAGE = "Couldn't find conversion task with id: ";
     private final ConversionTaskRepository conversionTaskRepository;
 
     @Value("${deletion.time.minutes:1}")
@@ -35,31 +38,32 @@ public class ConversionTaskService {
                 .taskCreationDate(LocalDateTime.now())
                 .build();
 
-        return conversionTaskRepository
-                .save(conversionTask);
+        return conversionTaskRepository.save(conversionTask);
     }
 
     @Transactional
     public void setConversionSuccessStatus(@NonNull UUID id, @NonNull String convertedName) {
-        ConversionTask task = conversionTaskRepository.getById(id);
+        ConversionTask task = conversionTaskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(COULD_NOT_FIND_ID_EXCEPTION_MESSAGE + id));
+
         task.setStatus(ConversionTaskStatus.SUCCESS);
         task.setConvertedName(convertedName);
         task.setTaskProcessingDate(LocalDateTime.now());
-        conversionTaskRepository.save(task);
     }
 
     @Transactional
     public void setConversionErrorStatus(@NonNull UUID id, ErrorMessage errorMessage) {
-        ConversionTask task = conversionTaskRepository.getById(id);
+        ConversionTask task = conversionTaskRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(COULD_NOT_FIND_ID_EXCEPTION_MESSAGE + id));
+
         task.setStatus(ConversionTaskStatus.ERROR);
         task.setErrorMessage(errorMessage);
-        conversionTaskRepository.save(task);
     }
 
     @Transactional
     public void setConversionDeletedStatus(@NonNull UUID id) {
         ConversionTask conversionTask = conversionTaskRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Couldn't find conversion task with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException(COULD_NOT_FIND_ID_EXCEPTION_MESSAGE + id));
 
         conversionTask.setStatus(ConversionTaskStatus.DELETED);
     }
@@ -67,7 +71,7 @@ public class ConversionTaskService {
     @Transactional
     public ConversionTask getConversionTask(@NonNull UUID id) {
         return conversionTaskRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Couldn't find conversion task with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException(COULD_NOT_FIND_ID_EXCEPTION_MESSAGE + id));
     }
 
     @Transactional
