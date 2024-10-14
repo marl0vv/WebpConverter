@@ -1,6 +1,5 @@
 package com.glamik.webpconverter.command;
 
-import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.enums.ErrorMessage;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.service.ConversionTaskService;
@@ -33,13 +32,13 @@ public class ProcessConversionTaskCommand implements VoidCommand<ConversionTask>
             outputFile = fileService.saveOutputFile(outputFile);
             Files.delete(filesystemFile.toPath());
 
-            conversionTaskService.setConversionSuccessStatus(task.getId(), ConversionTaskStatus.SUCCESS, outputFile.getName());
+            conversionTaskService.setConversionSuccessStatus(task.getId(), outputFile.getName());
         } catch (IOException e) {
             log.error("IO error occurred while processing file", e);
-            conversionTaskService.setConversionErrorStatus(task.getId(), ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NULL_OR_CORRUPTED);
+            conversionTaskService.setConversionErrorStatus(task.getId(), ErrorMessage.INPUT_FILE_IS_NULL_OR_CORRUPTED);
         } catch (IllegalArgumentException e) {
             log.error("Invalid argument", e);
-            conversionTaskService.setConversionErrorStatus(task.getId(), ConversionTaskStatus.ERROR, ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
+            conversionTaskService.setConversionErrorStatus(task.getId(), ErrorMessage.INPUT_FILE_IS_NOT_AN_IMAGE);
         }
     }
 }

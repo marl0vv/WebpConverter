@@ -1,6 +1,5 @@
 package com.glamik.webpconverter.scheduler;
 
-import com.glamik.webpconverter.enums.ConversionTaskStatus;
 import com.glamik.webpconverter.model.ConversionTask;
 import com.glamik.webpconverter.service.ConversionTaskService;
 import com.glamik.webpconverter.service.FileService;
@@ -33,7 +32,7 @@ public class ConversionTaskDeletionScheduler {
             File convertedFile = fileService.getOutputFile(task.getConvertedName());
             try {
                 Files.delete(convertedFile.toPath());
-                conversionTaskService.setConversionDeletedStatus(task.getId(), ConversionTaskStatus.DELETED);
+                conversionTaskService.setConversionDeletedStatus(task.getId());
             } catch (NoSuchFileException e) {
                 log.warn("File not found, might have already been deleted: {}", convertedFile.getAbsolutePath(), e);
             } catch (IOException e) {

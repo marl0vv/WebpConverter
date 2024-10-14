@@ -40,24 +40,24 @@ public class ConversionTaskService {
     }
 
     @Transactional
-    public void setConversionSuccessStatus(@NonNull UUID id, @NonNull ConversionTaskStatus status, @NonNull String convertedName) {
+    public void setConversionSuccessStatus(@NonNull UUID id, @NonNull String convertedName) {
         ConversionTask task = conversionTaskRepository.getById(id);
-        task.setStatus(status);
+        task.setStatus(ConversionTaskStatus.SUCCESS);
         task.setConvertedName(convertedName);
         task.setTaskProcessingDate(LocalDateTime.now());
         conversionTaskRepository.save(task);
     }
 
     @Transactional
-    public void setConversionErrorStatus(@NonNull UUID id, @NonNull ConversionTaskStatus status, ErrorMessage errorMessage) {
+    public void setConversionErrorStatus(@NonNull UUID id, ErrorMessage errorMessage) {
         ConversionTask task = conversionTaskRepository.getById(id);
-        task.setStatus(status);
+        task.setStatus(ConversionTaskStatus.ERROR);
         task.setErrorMessage(errorMessage);
         conversionTaskRepository.save(task);
     }
 
     @Transactional
-    public void setConversionDeletedStatus(@NonNull UUID id, @NonNull ConversionTaskStatus status) {
+    public void setConversionDeletedStatus(@NonNull UUID id) {
         Optional<ConversionTask> task = conversionTaskRepository.findById(id);
         task.ifPresent(conversionTask -> conversionTask.setStatus(ConversionTaskStatus.DELETED));
         conversionTaskRepository.save(task.get());
