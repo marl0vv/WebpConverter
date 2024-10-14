@@ -14,7 +14,9 @@ public interface ConversionTaskRepository extends JpaRepository<ConversionTask, 
     List<ConversionTask> findByStatusOrderByTaskCreationDate(ConversionTaskStatus status);
 
     @Query(
-            value = "SELECT * FROM conversion_task ct WHERE ct.task_processing_date < (NOW() - (:deletionTimeMinutes * INTERVAL '1 minute'))",
+            value = "SELECT * FROM conversion_task ct  " +
+                    "WHERE ct.task_processing_date < (NOW() - (:deletionTimeMinutes * INTERVAL '1 minute')) " +
+                    "AND ct.status = 'SUCCESS'",
             nativeQuery = true
     )
     List<ConversionTask> findTasksForDeletionNative(@Param("deletionTimeMinutes") int deletionTimeMinutes);
