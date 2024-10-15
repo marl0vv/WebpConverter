@@ -32,21 +32,30 @@ class ConversionTaskDeletionSchedulerIT extends BaseSpringBootApplicationTest {
     @DataSet(value = "example-data-single-for-deletion.json", cleanAfter = true, cleanBefore = true)
     void fileDeletionOk(@Value("${base.directory}") String programDir) throws Exception {
         // Arrange
+        UUID expectedId = UUID.fromString("607c09c6-3032-4711-a018-118d8f709c8c");
         File outFolder = new File(programDir, "out");
-
         File resource = new ClassPathResource("test-image.jpg").getFile();
         File convertedFile = new File(outFolder, "output-38968635-4feb-4d22-9503-06136521df3a.webp");
+
         Files.copy(resource.toPath(), convertedFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
 
         // Act & Assert
         assertThat(convertedFile).exists();
-
-        await().atMost(15, TimeUnit.SECONDS).until(() -> !convertedFile.exists());
+        
+        await().atMost(15, TimeUnit.SECONDS).until(() ->
+                !convertedFile.exists() &&
+                        conversionTaskRepository.findById(expectedId)
+                                .map(task -> task.getStatus() == ConversionTaskStatus.DELETED)
+                                .orElse(false));
 
         assertThat(convertedFile).doesNotExist();
 
-        Optional<ConversionTask> task = conversionTaskRepository.findById(UUID.fromString("607c09c6-3032-4711-a018-118d8f709c8c"));
-        assertThat(task.get().getStatus()).isEqualTo(ConversionTaskStatus.DELETED);
+        Optional<ConversionTask> taskOptional = conversionTaskRepository.findById(expectedId);
+        assertThat(taskOptional)
+                .isPresent()
+                .hasValueSatisfying(task ->
+                        assertThat(task.getStatus()).isEqualTo(ConversionTaskStatus.DELETED)
+                );
     }
 
 }
