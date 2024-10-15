@@ -77,7 +77,7 @@ public class ConverterAsyncController {
     private final ConversionTaskStatusMapper conversionTaskStatusMapper;
 
     /**
-     * Initiates and asynchronous image conversion to WebP format
+     * Initiates an asynchronous image conversion to WebP format
      *
      * @param imageFile the image file to be converted
      * @return UUID representing the unique ID of the conversion task
