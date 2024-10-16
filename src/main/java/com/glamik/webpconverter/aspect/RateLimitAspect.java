@@ -28,21 +28,31 @@ public class RateLimitAspect {
 
     public static final String ERROR_MESSAGE = "Too many requests at endpoint %s from IP %s! Please try again after %d milliseconds!";
 
-    // List of HTTP headers that may contain the client's real IP address when behind proxies
+    /**
+     * List of HTTP headers that may contain the client's real IP address when behind proxies
+     */
     protected static final String[] IP_HEADERS = {
             "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP",
             "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"
     };
 
-    // Map to track request timestamps per client IP address
-    // Key: IP address, Value: List of timestamps (in millisecond)
+    /**
+     * Map to track request timestamps per client IP address
+     * <p>
+     * Key: IP address, Value: List of timestamps (in millisecond)
+     * </p>
+     */
     private final ConcurrentHashMap<String, List<Long>> requestsCounts = new ConcurrentHashMap<>();
 
-    // Maximum number of allowed requests within the rate duration per IP address
+    /**
+     * Maximum number of allowed requests within the rate duration per IP address
+     */
     @Value("${rate.limit:3}")
     private int rateLimit;
 
-    // Time window in milliseconds for rate limiting
+    /**
+     * Time window in milliseconds for rate limiting
+     */
     @Value("${rate.duration.millis:60000}")
     private long rateDuration;
 
@@ -60,8 +70,10 @@ public class RateLimitAspect {
         final ServletRequestAttributes requestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
         HttpServletRequest request = requestAttributes.getRequest();
 
-        // Retrieve the client's IP address
-        // Request's timestamps from this IP will be recorded in a requestsCounts hashmap
+        /*
+         Retrieve the client's IP address
+         Request's timestamps from this IP will be recorded in a requestsCounts hashmap
+        */
         final String clientIp = getClientIp(request);
         final long currentTime = System.currentTimeMillis();
 
@@ -79,9 +91,11 @@ public class RateLimitAspect {
             }
         }
 
-        // Idea here is than when there is an error and not 200 code
-        // then there is an exception thrown. So, if we don't catch
-        // any exception then everything is successful and we should add currentTime timestamp to requestCounts
+        /*
+         Idea here is than when there is an error and not 200 code
+         then there is an exception thrown. So, if we don't catch
+         any exception then everything is successful, and we should add currentTime timestamp to requestCounts
+        */
         Object result;
         try {
             result = pjp.proceed();
