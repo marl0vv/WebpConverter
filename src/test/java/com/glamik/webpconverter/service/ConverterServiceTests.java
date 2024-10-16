@@ -1,6 +1,7 @@
 package com.glamik.webpconverter.service;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 import org.springframework.core.io.ClassPathResource;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -54,9 +56,10 @@ class ConverterServiceTests {
     }
 
     @Test
-    void testEmptyInput() throws IOException {
+    void testEmptyInput(@TempDir Path tempDir) throws IOException {
         // Arrange
-        File emptyFile = new File("empty.jpg");
+        //File emptyFile = new File("empty.jpg");
+        File emptyFile = tempDir.resolve("empty.jpg").toFile();
         Files.write(emptyFile.toPath(), new byte[0]);
 
         // Act & Assert

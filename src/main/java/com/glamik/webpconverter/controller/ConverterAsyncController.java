@@ -1,5 +1,6 @@
 package com.glamik.webpconverter.controller;
 
+import com.glamik.webpconverter.annotation.WithRateLimitProtection;
 import com.glamik.webpconverter.command.SaveConversionTaskCommand;
 import com.glamik.webpconverter.controller.dto.ConversionTaskStatusDto;
 import com.glamik.webpconverter.enums.ConversionTaskStatus;
@@ -83,6 +84,7 @@ public class ConverterAsyncController {
      * @return UUID representing the unique ID of the conversion task
      */
     @PostMapping("/convert-to-webp/async")
+    @WithRateLimitProtection
     public UUID convertImageAsync(@RequestParam("image") MultipartFile imageFile) {
         ConversionTask savedTask = saveConversionTaskCommand.execute(imageFile);
         return savedTask.getId();

@@ -39,10 +39,17 @@ public class ExceptionApiHandler {
         return ErrorDto.of(e.getMessage());
     }
 
+    @ExceptionHandler(RateLimitException.class)
+    @ResponseStatus(code = HttpStatus.TOO_MANY_REQUESTS)
+    public ErrorDto rateLimitException(RateLimitException e) {
+        return ErrorDto.of(e.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(code = HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorDto defaultException(Exception e) {
         log.error(e.getMessage(), e);
         return ErrorDto.of(e.getMessage());
     }
+
 }
