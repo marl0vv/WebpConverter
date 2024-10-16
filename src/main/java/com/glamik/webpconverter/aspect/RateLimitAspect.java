@@ -24,6 +24,10 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RateLimitAspect {
 
     public static final String ERROR_MESSAGE = "Too many requests at endpoint %s from IP %s! Please try again after %d milliseconds!";
+    public static final String[] IP_HEADERS = {
+            "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP",
+            "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"
+    };
     private final ConcurrentHashMap<String, List<Long>> requestsCounts = new ConcurrentHashMap<>();
 
     @Value("${rate.limit:3}")
@@ -42,32 +46,28 @@ public class RateLimitAspect {
         requestsCounts.putIfAbsent(clientIp, new ArrayList<>());
         List<Long> requestCounts = requestsCounts.get(clientIp);
 
+        Object result;
         synchronized (requestCounts) {
             requestCounts.removeIf(timestamp -> currentTime - timestamp > rateDuration);
 
             if (requestCounts.size() >= rateLimit) {
                 throw new RateLimitException(String.format(ERROR_MESSAGE, requestAttributes.getRequest().getRequestURI(), clientIp, rateDuration));
             }
-        }
 
-        Object result = pjp.proceed();
-        HttpServletResponse response = requestAttributes.getResponse();
-        if (response != null && response.getStatus() == HttpStatus.OK.value()) {
-            synchronized (requestCounts) {
+            try {
+                result = pjp.proceed();
                 requestCounts.add(currentTime);
+            } catch (Throwable throwable) {
+                log.error("Exception occurred during method execution: {}", pjp.getSignature(), throwable);
+                throw throwable;
             }
-        }
 
+        }
         return result;
     }
 
     public String getClientIp(HttpServletRequest request) {
-        String[] headers = {
-                "X-Forwarded-For", "Proxy-Client-IP", "WL-Proxy-Client-IP",
-                "HTTP_CLIENT_IP", "HTTP_X_FORWARDED_FOR"
-        };
-
-        for (String header : headers) {
+        for (String header : IP_HEADERS) {
             String ip = request.getHeader(header);
             if (ip != null && !ip.isEmpty() && !"unknown".equalsIgnoreCase(ip)) {
                 return ip.contains(",") ? ip.split(",")[0].trim() : ip;
