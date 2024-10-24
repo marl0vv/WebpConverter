@@ -10,8 +10,6 @@ import lombok.*;
 @Getter
 @Setter
 public class ConversionTaskStatusDto {
-
     private ConversionTaskStatus status;
     private ErrorMessage errorMessage;
-
 }

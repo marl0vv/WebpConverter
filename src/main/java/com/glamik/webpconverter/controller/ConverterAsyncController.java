@@ -41,7 +41,7 @@ import java.util.UUID;
  *       <td> POST </td>
  *       <td> /convert-to-webp/async </td>
  *       <td> UUID </td>
- *       <td> Request takes  an image to conversion and returns and ID of an conversion task </td>
+ *       <td> Request takes  an image to conversion and returns and ID of a conversion task </td>
  *     </tr>
  *     <tr>
  *       <td> GET </td>
